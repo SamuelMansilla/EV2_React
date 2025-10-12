@@ -62,7 +62,7 @@ const HomePage = () => {
                             <Link to="/productos" className="btn btn-primary btn-lg animate-button">Explora nuestros productos</Link>
                         </div>
                         <div className="col-md-6 text-center d-none d-md-block">
-                            <img src="/img/banner2.png" alt="Banner Gamer" className="img-fluid animate-img banner-img" />
+                            <img src={process.env.PUBLIC_URL +"/img/banner2.png"} alt="Banner Gamer" className="img-fluid animate-img banner-img" />
                         </div>
                     </div>
                 </div>
