@@ -23,7 +23,7 @@ const Header = () => {
       <nav>
         <div className="logo">
           {/* Aquí está la corrección: se usa la ruta como texto */}
-          <Link to="/"><img src="/img/Logo_Level-U.webp" alt="Logo Level-Up" /></Link>
+          <Link to="/"><img src={process.env.PUBLIC_URL +"/img/Logo_Level-U.webp"} alt="Logo Level-Up" /></Link>
         </div>
 
         <div className={`menu-toggle ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
