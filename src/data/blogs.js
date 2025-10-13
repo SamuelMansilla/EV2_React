@@ -5,7 +5,7 @@ export const blogs = [
   titulo: "Top 5 Juegos de Mesa para Gamers",
   fecha: "2025-09-05",
   autor: "Level-UP Team",
-  imagen: "/img/juegos_de_mesa.png",
+  imagen:process.env.PUBLIC_URL + "/img/juegos_de_mesa.png",
   descripcion: "Descubre los juegos de mesa más entretenidos para pasar horas de diversión con amigos.",
   contenido: `
 Los juegos de mesa siguen siendo una excelente forma de socializar y disfrutar de la estrategia y la competencia.
@@ -24,7 +24,7 @@ Estos juegos no solo son divertidos, sino que también fomentan la estrategia, l
   titulo: "Cómo elegir el mejor periférico para tu PC Gamer",
   fecha: "2025-09-05",
   autor: "Level-UP Team",
-  imagen: "/img/perifericos.png",
+  imagen: process.env.PUBLIC_URL +"/img/perifericos.png",
   descripcion: "Guía rápida para escoger el teclado, mouse y auriculares ideales para tu setup gamer.",
   contenido: `
 Elegir periféricos adecuados es fundamental para mejorar tu experiencia de juego.
