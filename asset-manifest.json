@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/EV2_React/static/css/main.b32a4678.css",
-    "main.js": "/EV2_React/static/js/main.86872225.js",
+    "main.js": "/EV2_React/static/js/main.a96b5e0b.js",
     "index.html": "/EV2_React/index.html",
     "main.b32a4678.css.map": "/EV2_React/static/css/main.b32a4678.css.map",
-    "main.86872225.js.map": "/EV2_React/static/js/main.86872225.js.map"
+    "main.a96b5e0b.js.map": "/EV2_React/static/js/main.a96b5e0b.js.map"
   },
   "entrypoints": [
     "static/css/main.b32a4678.css",
-    "static/js/main.86872225.js"
+    "static/js/main.a96b5e0b.js"
   ]
 }
