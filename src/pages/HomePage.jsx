@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { productos } from '../data/productos';
 import CategoryFilter from '../components/CategoryFilter';
+import UserProfile from '../components/UserProfile'; // ✅ 1. IMPORTA EL NUEVO COMPONENTE
 
 // Importa los CSS necesarios
 import '../assets/css/banner.css';
@@ -68,6 +69,9 @@ const HomePage = () => {
                 </div>
             </section>
 
+            {/* ✅ 2. AÑADE EL COMPONENTE DE PERFIL DE USUARIO AQUÍ */}
+            <UserProfile />
+
             <div className="banner-divider"></div>
             
             <CategoryFilter 
@@ -105,7 +109,6 @@ const HomePage = () => {
                         filteredProducts.map(product => (
                             <div className="card" key={product.code}>
                                 <img src={product.image} alt={product.name} />
-                                {/* ✅ DIV AÑADIDO PARA AGRUPAR CONTENIDO */}
                                 <div className="card-body">
                                     <h6>{product.name}</h6>
                                     <p className="descripcion">{product.description.substring(0, 80)}...</p>

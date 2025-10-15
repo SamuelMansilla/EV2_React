@@ -1,21 +1,54 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { CartContext } from '../context/CartContext';
 import '../assets/css/carrito.css';
 
 const CarritoPage = () => {
     const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
 
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const [user, setUser] = useState(null);
+    const [discountApplied, setDiscountApplied] = useState(false);
 
-    // ✅ Función para manejar el pago
+    useEffect(() => {
+        const loggedUser = JSON.parse(localStorage.getItem("user"));
+        if (loggedUser) {
+            setUser(loggedUser);
+        }
+    }, []);
+
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const discountPercentage = 0.10;
+    const total = discountApplied ? subtotal * (1 - discountPercentage) : subtotal;
+
+    const handleRedeemPoints = () => {
+        const pointsNeeded = 500;
+        if (user && user.points >= pointsNeeded && !discountApplied) {
+            const updatedUser = { ...user, points: user.points - pointsNeeded };
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            setUser(updatedUser);
+            setDiscountApplied(true);
+            alert(`¡${pointsNeeded} puntos canjeados! Se ha aplicado un ${discountPercentage * 100}% de descuento.`);
+        } else if (discountApplied) {
+            alert("Ya has aplicado un descuento en esta compra.");
+        } else {
+            alert(`Necesitas al menos ${pointsNeeded} puntos para canjear un descuento.`);
+        }
+    };
+
     const handlePay = () => {
         if (cart.length === 0) {
             alert("Tu carrito está vacío.");
             return;
         }
-        alert('¡Gracias por tu compra!');
-        // ✅ AHORA SÍ: Se llama a la función para vaciar el carrito
-        clearCart(); 
+        if (user) {
+            const pointsEarned = Math.floor(total / 1000);
+            const updatedUser = { ...user, points: (user.points || 0) + pointsEarned };
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            alert(`¡Gracias por tu compra! Has ganado ${pointsEarned} puntos.`);
+        } else {
+            alert('¡Gracias por tu compra!');
+        }
+        clearCart();
+        setDiscountApplied(false);
     };
 
     return (
@@ -29,6 +62,7 @@ const CarritoPage = () => {
                         cart.map(item => (
                             <div key={item.code} className="carrito-item">
                                 <div className="d-flex align-items-center flex-grow-1">
+                                    {/* ✅ CORRECCIÓN AQUÍ: Se quita el prefijo extra */}
                                     <img src={item.image} alt={item.name} className="carrito-img" />
                                     <div>
                                         <h6>{item.name}</h6>
@@ -49,9 +83,19 @@ const CarritoPage = () => {
                     <div className="card p-3 sticky-top">
                         <h4>Resumen</h4>
                         <hr />
-                        <p>Total: <strong>${total.toLocaleString('es-CL')}</strong></p>
+                        <p>Subtotal: ${subtotal.toLocaleString('es-CL')}</p>
+                        {discountApplied && (
+                            <p className="text-success">Descuento (10%): -${(subtotal * discountPercentage).toLocaleString('es-CL')}</p>
+                        )}
+                        <p className="fw-bold fs-5">Total: <strong>${total.toLocaleString('es-CL')}</strong></p>
+                        
+                        {user && user.points >= 500 && !discountApplied && (
+                            <button className="btn btn-info w-100 mb-2" onClick={handleRedeemPoints}>
+                                Canjear 500 Puntos por 10% Dcto.
+                            </button>
+                        )}
+
                         <button className="btn btn-danger w-100 mb-2" onClick={clearCart}>Vaciar carrito</button>
-                        {/* ✅ El botón ahora llama a la nueva función handlePay */}
                         <button className="btn btn-success w-100" onClick={handlePay}>Pagar</button>
                     </div>
                 </aside>

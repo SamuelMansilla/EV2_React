@@ -1,15 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './assets/css/styles.css';
-// Importa el proveedor del carrito
+// ✅ 1. Cambia la importación de 'BrowserRouter as Router' a solo 'BrowserRouter'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
-
-// Importa componentes estructurales
 import Header from './components/Header';
 import Footer from './components/Footer';
-
-// Importa todas las páginas de tu aplicación
-// Nota: Deberás crear estos archivos de página en tu carpeta src/pages/
 import HomePage from './pages/HomePage';
 import ProductosPage from './pages/ProductosPage';
 import CarritoPage from './pages/CarritoPage';
@@ -19,19 +13,15 @@ import ContactoPage from './pages/ContactoPage';
 import LoginPage from './pages/LoginPage';
 import DetalleProductoPage from './pages/DetalleProductoPage';
 import DetalleBlogPage from './pages/DetalleBlogPage';
-
-// Importa los estilos globales si no lo hiciste en index.js
-// import './assets/css/styles.css';
+import './assets/css/styles.css';
 
 function App() {
   return (
-    // 2. El proveedor del carrito envuelve toda la aplicación
     <CartProvider>
-      {/* 1. El Router gestiona la navegación */}
-      <Router>
+      {/* ✅ 2. Usa BrowserRouter y añade la propiedad 'basename' */}
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Header />
         <main>
-          {/* 3. Routes define qué componente mostrar según la URL */}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/productos" element={<ProductosPage />} />
@@ -42,13 +32,11 @@ function App() {
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/carrito" element={<CarritoPage />} />
             <Route path="/login" element={<LoginPage />} />
-
-            {/* Opcional: Ruta para página no encontrada */}
             <Route path="*" element={<h1>404: Página no encontrada</h1>} />
           </Routes>
         </main>
         <Footer />
-      </Router>
+      </BrowserRouter>
     </CartProvider>
   );
 }
