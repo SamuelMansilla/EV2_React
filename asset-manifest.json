@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/EV2_React/static/css/main.b32a4678.css",
-    "main.js": "/EV2_React/static/js/main.9f5fba09.js",
+    "main.css": "/EV2_React/static/css/main.2017351b.css",
+    "main.js": "/EV2_React/static/js/main.47da56f7.js",
     "index.html": "/EV2_React/index.html",
-    "main.b32a4678.css.map": "/EV2_React/static/css/main.b32a4678.css.map",
-    "main.9f5fba09.js.map": "/EV2_React/static/js/main.9f5fba09.js.map"
+    "main.2017351b.css.map": "/EV2_React/static/css/main.2017351b.css.map",
+    "main.47da56f7.js.map": "/EV2_React/static/js/main.47da56f7.js.map"
   },
   "entrypoints": [
-    "static/css/main.b32a4678.css",
-    "static/js/main.9f5fba09.js"
+    "static/css/main.2017351b.css",
+    "static/js/main.47da56f7.js"
   ]
 }
