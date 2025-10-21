@@ -5,9 +5,11 @@ import '../assets/css/carrito.css';
 const CarritoPage = () => {
     const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
 
+    // ✅ ESTADOS PARA MANEJAR EL USUARIO Y EL DESCUENTO
     const [user, setUser] = useState(null);
     const [discountApplied, setDiscountApplied] = useState(false);
 
+    // ✅ CARGAMOS LOS DATOS DEL USUARIO AL ABRIR LA PÁGINA
     useEffect(() => {
         const loggedUser = JSON.parse(localStorage.getItem("user"));
         if (loggedUser) {
@@ -15,32 +17,35 @@ const CarritoPage = () => {
         }
     }, []);
 
+    // Calcula totales
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const discountPercentage = 0.10;
+    const discountPercentage = 0.10; // 10%
     const total = discountApplied ? subtotal * (1 - discountPercentage) : subtotal;
 
+    // ✅ FUNCIÓN PARA CANJEAR PUNTOS
     const handleRedeemPoints = () => {
-        const pointsNeeded = 500;
+        const pointsNeeded = 500; // Puntos necesarios
         if (user && user.points >= pointsNeeded && !discountApplied) {
             const updatedUser = { ...user, points: user.points - pointsNeeded };
             localStorage.setItem("user", JSON.stringify(updatedUser));
-            setUser(updatedUser);
+            setUser(updatedUser); // Actualiza el estado local
             setDiscountApplied(true);
-            alert(`¡${pointsNeeded} puntos canjeados! Se ha aplicado un ${discountPercentage * 100}% de descuento.`);
+            alert(`¡${pointsNeeded} puntos canjeados! Descuento del ${discountPercentage * 100}% aplicado.`);
         } else if (discountApplied) {
-            alert("Ya has aplicado un descuento en esta compra.");
+            alert("Ya has aplicado un descuento.");
         } else {
-            alert(`Necesitas al menos ${pointsNeeded} puntos para canjear un descuento.`);
+            alert(`Necesitas ${pointsNeeded} puntos para canjear.`);
         }
     };
 
+    // ✅ FUNCIÓN DE PAGO ACTUALIZADA PARA DAR PUNTOS
     const handlePay = () => {
         if (cart.length === 0) {
             alert("Tu carrito está vacío.");
             return;
         }
         if (user) {
-            const pointsEarned = Math.floor(total / 1000);
+            const pointsEarned = Math.floor(total / 1000); // 1 punto por cada $1000
             const updatedUser = { ...user, points: (user.points || 0) + pointsEarned };
             localStorage.setItem("user", JSON.stringify(updatedUser));
             alert(`¡Gracias por tu compra! Has ganado ${pointsEarned} puntos.`);
@@ -48,7 +53,7 @@ const CarritoPage = () => {
             alert('¡Gracias por tu compra!');
         }
         clearCart();
-        setDiscountApplied(false);
+        setDiscountApplied(false); // Resetea el descuento
     };
 
     return (
@@ -62,7 +67,6 @@ const CarritoPage = () => {
                         cart.map(item => (
                             <div key={item.code} className="carrito-item">
                                 <div className="d-flex align-items-center flex-grow-1">
-                                    {/* ✅ CORRECCIÓN AQUÍ: Se quita el prefijo extra */}
                                     <img src={item.image} alt={item.name} className="carrito-img" />
                                     <div>
                                         <h6>{item.name}</h6>
@@ -85,13 +89,14 @@ const CarritoPage = () => {
                         <hr />
                         <p>Subtotal: ${subtotal.toLocaleString('es-CL')}</p>
                         {discountApplied && (
-                            <p className="text-success">Descuento (10%): -${(subtotal * discountPercentage).toLocaleString('es-CL')}</p>
+                            <p className="text-success">Descuento ({discountPercentage * 100}%): -${(subtotal * discountPercentage).toLocaleString('es-CL')}</p>
                         )}
                         <p className="fw-bold fs-5">Total: <strong>${total.toLocaleString('es-CL')}</strong></p>
-                        
+
+                        {/* ✅ BOTÓN PARA CANJEAR PUNTOS */}
                         {user && user.points >= 500 && !discountApplied && (
                             <button className="btn btn-info w-100 mb-2" onClick={handleRedeemPoints}>
-                                Canjear 500 Puntos por 10% Dcto.
+                                Canjear 500 Puntos por {discountPercentage * 100}% Dcto.
                             </button>
                         )}
 

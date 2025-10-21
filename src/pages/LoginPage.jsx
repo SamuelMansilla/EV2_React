@@ -7,10 +7,10 @@ const LoginPage = () => {
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
 
-    // ✅ 1. AÑADIMOS 'referralCode' AL ESTADO INICIAL
+    // ✅ 1. AÑADIMOS 'referralCode' DE VUELTA AL ESTADO INICIAL
     const [formData, setFormData] = useState({
         run: '', nombre: '', apellidos: '', email: '',
-        password: '', fechaNac: '', role: 'cliente', region: '', comuna: '',
+        password: '', fechaNac: '', role: 'cliente', region: '', comuna: '', // Role 'cliente' por defecto
         referralCode: '' 
     });
     const [errors, setErrors] = useState({});
@@ -22,8 +22,12 @@ const LoginPage = () => {
         } else {
             setComunas([]);
         }
-        setFormData(prev => ({ ...prev, comuna: '' }));
-    }, [formData.region]);
+        // Reiniciar comuna al cambiar de región (importante para evitar errores)
+        if (formData.comuna && !comunas.includes(formData.comuna)) {
+             setFormData(prev => ({ ...prev, comuna: '' }));
+        }
+       
+    }, [formData.region, comunas]);
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -57,19 +61,19 @@ const LoginPage = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    // ✅ 2. FUNCIÓN DE REGISTRO ACTUALIZADA CON LÓGICA DE REFERIDOS
+    // ✅ 2. FUNCIÓN DE REGISTRO ACTUALIZADA CON LÓGICA DE REFERIDOS Y GAMIFICACIÓN
     const handleRegister = (e) => {
         e.preventDefault();
         if (validate()) {
             // Lógica de referido (simulada)
             if (formData.referralCode) {
-                // En una app real, buscarías en la base de datos de usuarios
-                // Aquí, asumimos que el código es del último usuario registrado ("user")
-                const referredByUser = JSON.parse(localStorage.getItem("user"));
+                const referredByUser = JSON.parse(localStorage.getItem("user")); // Asume que el código es del último usuario
                 if (referredByUser && referredByUser.myReferralCode === formData.referralCode) {
                     alert(`¡Gracias por usar el código de ${referredByUser.nombre}!`);
                     // (En una app real, aquí actualizarías los puntos de 'referredByUser' en la base de datos)
                     console.log(`${referredByUser.nombre} ha ganado puntos por referirte.`);
+                } else {
+                    console.log("Código de referido no válido o no encontrado.");
                 }
             }
 
@@ -86,7 +90,7 @@ const LoginPage = () => {
 
             localStorage.setItem("user", JSON.stringify(newUser));
             alert(`Usuario registrado con éxito. Tu código de referido es: ${myNewReferralCode}`);
-            setIsLogin(true);
+            setIsLogin(true); // Cambia al formulario de login
         }
     };
 
@@ -147,7 +151,7 @@ const LoginPage = () => {
 
                         <input type="date" id="fechaNac" value={formData.fechaNac} onChange={handleInputChange} />
                         
-                        {/* ✅ 3. INPUT PARA EL CÓDIGO DE REFERIDO AÑADIDO AL FORMULARIO */}
+                        {/* ✅ 3. INPUT PARA EL CÓDIGO DE REFERIDO AÑADIDO DE VUELTA */}
                         <input 
                             type="text" 
                             id="referralCode" 

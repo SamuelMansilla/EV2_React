@@ -79,3 +79,18 @@
 .card .btn {
     margin-top: 15px;
 }
+
+/* Estilos para el Rating */
+.rating {
+  font-size: 14px; /* Tamaño del texto */
+}
+
+.rating .stars {
+  color: #ffc107; /* Color amarillo/dorado para las estrellas */
+  margin-right: 5px; /* Espacio entre estrellas y texto */
+}
+
+.rating .reviews {
+  color: var(--color-text-alt); /* Color grisáceo para el número de reseñas */
+  font-size: 12px; /* Más pequeño que las estrellas */
+}
