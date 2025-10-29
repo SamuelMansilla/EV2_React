@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/EV2_React/static/css/main.c747038a.css",
+    "main.js": "/EV2_React/static/js/main.6c69b387.js",
+    "index.html": "/EV2_React/index.html",
+    "main.c747038a.css.map": "/EV2_React/static/css/main.c747038a.css.map",
+    "main.6c69b387.js.map": "/EV2_React/static/js/main.6c69b387.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c747038a.css",
+    "static/js/main.6c69b387.js"
+  ]
+}
