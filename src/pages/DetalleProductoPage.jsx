@@ -1,13 +1,17 @@
-import React, { useContext } from 'react';
+// src/pages/DetalleProductoPage.jsx
+import React, { useContext } from 'react'; // <-- Importa useContext
 import { useParams, Link } from 'react-router-dom';
-import { productos } from '../data/productos';
-import { CartContext } from '../context/CartContext';
+// import { productos } from '../data/productos'; // <-- ELIMINA esta línea
+import { CartContext } from '../context/CartContext'; // <-- Importa el Contexto
 import '../assets/css/detalle-producto.css';
 
 const DetalleProductoPage = () => {
     const { id } = useParams();
-    const { addToCart } = useContext(CartContext);
-    const producto = productos.find(p => p.code === id);
+    // Obtiene addToCart y la lista dinámica 'products' del contexto
+    const { addToCart, products } = useContext(CartContext); // <-- USA products del contexto
+
+    // Busca el producto en la lista del contexto
+    const producto = products.find(p => p.code === id); // <-- Busca en 'products'
 
     if (!producto) {
         return (
@@ -28,6 +32,7 @@ const DetalleProductoPage = () => {
             <div id="detalle-producto">
                 <div className="card-detalle row">
                     <div className="col-md-6 img-container">
+                        {/* Muestra la imagen (puede ser Base64 o ruta) */}
                         <img src={producto.image} alt={producto.name} className="img-fluid" />
                     </div>
                     <div className="col-md-6 info">

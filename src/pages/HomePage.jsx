@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/HomePage.jsx
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { productos } from '../data/productos';
+import { CartContext } from '../context/CartContext';
 import CategoryFilter from '../components/CategoryFilter';
-import UserProfile from '../components/UserProfile'; // ✅ 1. IMPORTA EL COMPONENTE DE PERFIL
+import UserProfile from '../components/UserProfile';
 
 // Importa los CSS necesarios
 import '../assets/css/banner.css';
@@ -21,14 +22,16 @@ const normalizeText = (text) => {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 };
 
+
 const HomePage = () => {
+    const { products } = useContext(CartContext);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [priceFilter, setPriceFilter] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredProducts, setFilteredProducts] = useState(productos);
+    const [filteredProducts, setFilteredProducts] = useState(products);
 
     useEffect(() => {
-        let tempProducts = [...productos];
+        let tempProducts = [...products];
         if (searchTerm) {
              tempProducts = tempProducts.filter(product =>
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -49,13 +52,13 @@ const HomePage = () => {
             });
         }
         setFilteredProducts(tempProducts);
-    }, [selectedCategory, priceFilter, searchTerm]);
+    }, [selectedCategory, priceFilter, searchTerm, products]);
 
     return (
         <div>
             {/* --- Sección del Banner --- */}
             <section className="banner py-5 bg-dark text-light">
-                 {/* ... (contenido del banner sin cambios) ... */}
+                 {/* ✅ CONTENIDO DEL BANNER RESTAURADO */}
                  <div className="container">
                     <div className="row align-items-center">
                         <div className="col-md-6">
@@ -67,20 +70,20 @@ const HomePage = () => {
                                 <span className="material-icons align-middle">sports_esports</span> Amplia variedad de productos<br />
                                 <span className="material-icons align-middle">star</span> Calidad y confianza garantizadas
                             </div>
-                            <Link to="/productos" className="btn btn-primary btn-lg animate-button">Explora nuestros productos</Link>
+                            <Link to="/productos" className="btn btn-primary btn-lg animate-button">Explora nuestros productos</Link> {/* ✅ BOTÓN RESTAURADO */}
                         </div>
                         <div className="col-md-6 text-center d-none d-md-block">
                             <img
                                 src={process.env.PUBLIC_URL + "/img/banner2.png"}
                                 alt="Banner Gamer"
                                 className="img-fluid animate-img banner-img"
-                            />
+                            /> {/* ✅ IMAGEN RESTAURADA */}
                         </div>
                     </div>
                 </div>
+                 {/* ✅ FIN CONTENIDO RESTAURADO */}
             </section>
 
-            {/* ✅ 2. AÑADE EL COMPONENTE DE PERFIL DE USUARIO AQUÍ */}
             <UserProfile />
 
             <div className="banner-divider"></div>
@@ -92,7 +95,6 @@ const HomePage = () => {
 
             {/* --- Sección de Productos --- */}
             <section className="products container">
-                 {/* ... (contenido de productos sin cambios) ... */}
                  <h2 className="section-title">Nuestros Productos</h2>
                 <div className="filters mb-4 d-flex gap-2">
                     <input

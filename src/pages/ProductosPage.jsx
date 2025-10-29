@@ -1,10 +1,10 @@
+// src/pages/ProductosPage.jsx
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { productos } from '../data/productos';
 import { CartContext } from '../context/CartContext';
-import '../assets/css/productos.css'; // Asegúrate de importar el CSS
+import '../assets/css/productos.css';
 
-// Función para renderizar estrellas (puedes moverla a un archivo utils si prefieres)
+// ✅ AÑADIDA DE VUELTA: Función para renderizar estrellas
 const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
     const emptyStars = 5 - fullStars;
@@ -12,7 +12,7 @@ const renderStars = (rating) => {
 };
 
 const ProductosPage = () => {
-    const { addToCart } = useContext(CartContext);
+    const { addToCart, products } = useContext(CartContext); // <-- Obtiene products del contexto
 
     const handleAddToCart = (product) => {
         addToCart(product);
@@ -23,12 +23,12 @@ const ProductosPage = () => {
         <main className="productos">
             <h2>Nuestros Productos</h2>
             <div className="grid-productos">
-                {productos.map(p => (
+                {products.map(p => ( // <-- Mapea sobre products del contexto
                     <div className="card" key={p.code}>
                         <img src={p.image} alt={p.name} />
                         <div className="card-body">
                              <h6>{p.name}</h6>
-                            {/* ✅ AÑADIMOS EL RATING AQUÍ */}
+                            {/* Usa la función renderStars */}
                             <div className="rating mb-2">
                                 <span className="stars">{renderStars(p.rating)}</span>
                                 <span className="reviews">({p.reviews} reseñas)</span>
@@ -36,7 +36,7 @@ const ProductosPage = () => {
                             <p className="descripcion">{p.description.substring(0, 90)}...</p>
                         </div>
                         <div className="precio">${p.price.toLocaleString('es-CL')}</div>
-                        <div className="product-actions mt-auto"> {/* mt-auto empuja los botones abajo */}
+                        <div className="product-actions mt-auto">
                              <button className="btn btn-primary mb-2 w-100" onClick={() => handleAddToCart(p)}>
                                 Agregar al Carrito
                             </button>
