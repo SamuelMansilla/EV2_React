@@ -1,9 +1,26 @@
+<<<<<<< HEAD
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios'; // Importamos axios
 import { CartContext } from '../context/CartContext';
 import '../assets/css/detalle-producto.css';
 
+=======
+// src/pages/DetalleProductoPage.jsx
+import React, { useContext } from 'react'; // <-- Importa useContext
+import { useParams, Link } from 'react-router-dom';
+// import { productos } from '../data/productos'; // <-- ELIMINA esta línea
+import { CartContext } from '../context/CartContext'; // <-- Importa el Contexto
+import '../assets/css/detalle-producto.css';
+
+const DetalleProductoPage = () => {
+    const { id } = useParams();
+    // Obtiene addToCart y la lista dinámica 'products' del contexto
+    const { addToCart, products } = useContext(CartContext); // <-- USA products del contexto
+
+    // Busca el producto en la lista del contexto
+    const producto = products.find(p => p.code === id); // <-- Busca en 'products'
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 
 
 const DetalleProductoPage = () => {
@@ -78,7 +95,12 @@ const DetalleProductoPage = () => {
             <div id="detalle-producto">
                 <div className="card-detalle row">
                     <div className="col-md-6 img-container">
+<<<<<<< HEAD
                         <img src={process.env.PUBLIC_URL + producto.image} alt={producto.name} className="img-fluid" />
+=======
+                        {/* Muestra la imagen (puede ser Base64 o ruta) */}
+                        <img src={producto.image} alt={producto.name} className="img-fluid" />
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
                     </div>
                     <div className="col-md-6 info">
                         <h2>{producto.name}</h2>

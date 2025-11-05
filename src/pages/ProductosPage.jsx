@@ -1,10 +1,20 @@
+<<<<<<< HEAD
 import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'; // Importamos axios
+=======
+// src/pages/ProductosPage.jsx
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 import { CartContext } from '../context/CartContext';
-import '../assets/css/productos.css'; // Asegúrate de importar el CSS
+import '../assets/css/productos.css';
 
+<<<<<<< HEAD
 // Función para renderizar estrellas (sin cambios)
+=======
+// ✅ AÑADIDA DE VUELTA: Función para renderizar estrellas
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
     const emptyStars = 5 - fullStars;
@@ -12,6 +22,7 @@ const renderStars = (rating) => {
 };
 
 const ProductosPage = () => {
+<<<<<<< HEAD
     const { addToCart } = useContext(CartContext);
     
     // --- NUEVOS ESTADOS ---
@@ -47,6 +58,9 @@ const ProductosPage = () => {
 
         fetchProductos(); // Llama a la función
     }, []); // El array vacío [] asegura que solo se ejecute una vez
+=======
+    const { addToCart, products } = useContext(CartContext); // <-- Obtiene products del contexto
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 
     const handleAddToCart = (product) => {
         addToCart(product);
@@ -67,11 +81,15 @@ const ProductosPage = () => {
         <main className="productos">
             <h2>Nuestros Productos</h2>
             <div className="grid-productos">
-                {productos.map(p => (
+                {products.map(p => ( // <-- Mapea sobre products del contexto
                     <div className="card" key={p.code}>
                         <img src={process.env.PUBLIC_URL + p.image} alt={p.name} />
                         <div className="card-body">
                              <h6>{p.name}</h6>
+<<<<<<< HEAD
+=======
+                            {/* Usa la función renderStars */}
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
                             <div className="rating mb-2">
                                 <span className="stars">{renderStars(p.rating)}</span>
                                 <span className="reviews">({p.reviews} reseñas)</span>

@@ -4,10 +4,17 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 
 // Importa los Layouts
+<<<<<<< HEAD
 import PublicLayout from './components/PublicLayout'; // Plantilla de la tienda (del Paso 3)
 import AdminLayout from './components/AdminLayout';   // Plantilla del admin (del Paso 2)
 
 // Importa todas las Páginas Públicas (ya existían)
+=======
+import PublicLayout from './components/PublicLayout'; // Plantilla de la tienda
+import AdminLayout from './components/AdminLayout';   // Plantilla del admin
+
+// Importa todas las Páginas Públicas
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 import HomePage from './pages/HomePage';
 import ProductosPage from './pages/ProductosPage';
 import CarritoPage from './pages/CarritoPage';
@@ -18,12 +25,20 @@ import LoginPage from './pages/LoginPage';
 import DetalleProductoPage from './pages/DetalleProductoPage';
 import DetalleBlogPage from './pages/DetalleBlogPage';
 
+<<<<<<< HEAD
 // Importa todas las Páginas de Admin (del Paso 1)
 import AdminHomePage from './pages/AdminHomePage';
 import AdminProductosPage from './pages/AdminProductosPage';
 import AdminUsuariosPage from './pages/AdminUsuariosPage'; 
 
 // Importa los CSS
+=======
+// Importa todas las Páginas de Admin
+import AdminHomePage from './pages/AdminHomePage';
+import AdminProductosPage from './pages/AdminProductosPage';
+import AdminUsuariosPage from './pages/AdminUsuariosPage'; // Asegúrate de haber creado esta página
+
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 import './assets/css/styles.css';
 import './assets/css/admin.css'; // Importa el CSS de admin
 

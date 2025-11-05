@@ -15,16 +15,24 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
+<<<<<<< HEAD
     // ✅ CORRECCIÓN: Usamos la versión de samuelmansilla para que funcione en GitHub Pages
     window.location.href = process.env.PUBLIC_URL + '/login'; 
+=======
+    window.location.href = process.env.PUBLIC_URL + '/login'; // Corregido para GitHub Pages
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
   };
 
   return (
     <header>
       <nav>
         <div className="logo">
+<<<<<<< HEAD
           {/* (Esto ya estaba correcto en framardones) */}
           <Link to="/"><img src={process.env.PUBLIC_URL +"/img/Logo_Level-U.webp"} alt="Logo Level-Up" /></Link>
+=======
+          <Link to="/"><img src={process.env.PUBLIC_URL + "/img/Logo_Level-U.webp"} alt="Logo Level-Up" /></Link>
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
         </div>
 
         <div className={`menu-toggle ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
@@ -32,7 +40,7 @@ const Header = () => {
         </div>
 
         <ul id="menu" className={menuOpen ? 'show' : ''} onClick={() => setMenuOpen(false)}>
-          <li><NavLink to="/">Inicio</NavLink></li>
+          <li><NavLink to="/" end>Inicio</NavLink></li>
           <li><NavLink to="/productos">Productos</NavLink></li>
           <li><NavLink to="/nosotros">Nosotros</NavLink></li>
           <li><NavLink to="/blogs">Blogs</NavLink></li>
@@ -44,7 +52,11 @@ const Header = () => {
           
           {user ? (
             <>
+<<<<<<< HEAD
               {/* ✅ AÑADIDO: Botón de Admin Condicional (de samuelmansilla) */}
+=======
+              {/* ✅ AQUÍ ESTÁ EL BOTÓN DE ADMIN CONDICIONAL */}
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
               {user.role === 'admin' && (
                 <Link to="/admin" className="admin-panel-link">
                   <span className="material-icons">settings</span>

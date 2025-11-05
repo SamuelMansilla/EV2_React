@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useContext } from 'react'; // Agrega useContext
 import { Link } from 'react-router-dom';
 import axios from 'axios'; // Agrega axios
 import CategoryFilter from '../components/CategoryFilter';
 import UserProfile from '../components/UserProfile';
 import { CartContext } from '../context/CartContext'; // Importa CartContext si decides añadir "Agregar al Carrito" aquí
+=======
+// src/pages/HomePage.jsx
+import React, { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { CartContext } from '../context/CartContext';
+import CategoryFilter from '../components/CategoryFilter';
+import UserProfile from '../components/UserProfile';
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 
 // Importa los CSS necesarios
 import '../assets/css/banner.css';
@@ -25,19 +34,26 @@ const normalizeText = (text) => {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 };
 
+
 const HomePage = () => {
+    const { products } = useContext(CartContext);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [priceFilter, setPriceFilter] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
+<<<<<<< HEAD
     
     // --- ESTADOS PARA DATOS DE LA API ---
     const [allProducts, setAllProducts] = useState([]); // Guarda la lista original de la API
     const [filteredProducts, setFilteredProducts] = useState([]); // Guarda los productos filtrados
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+=======
+    const [filteredProducts, setFilteredProducts] = useState(products);
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 
     // --- HOOK PARA CARGAR PRODUCTOS DESDE LA API ---
     useEffect(() => {
+<<<<<<< HEAD
         const fetchAllProductos = async () => {
             try {
                 setLoading(true);
@@ -59,6 +75,9 @@ const HomePage = () => {
     useEffect(() => {
         let tempProducts = [...allProducts]; // Empieza con la lista completa de la API
 
+=======
+        let tempProducts = [...products];
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
         if (searchTerm) {
              tempProducts = tempProducts.filter(product =>
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -78,15 +97,24 @@ const HomePage = () => {
                 return product.price >= min;
             });
         }
+<<<<<<< HEAD
         setFilteredProducts(tempProducts); // Actualiza la lista filtrada
 
     }, [selectedCategory, priceFilter, searchTerm, allProducts]); // Depende de allProducts ahora
+=======
+        setFilteredProducts(tempProducts);
+    }, [selectedCategory, priceFilter, searchTerm, products]);
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
 
     return (
         <div>
             {/* --- Sección del Banner (sin cambios) --- */}
             <section className="banner py-5 bg-dark text-light">
+<<<<<<< HEAD
                  {/* ... (contenido del banner) ... */}
+=======
+                 {/* ✅ CONTENIDO DEL BANNER RESTAURADO */}
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
                  <div className="container">
                     <div className="row align-items-center">
                         <div className="col-md-6">
@@ -98,20 +126,24 @@ const HomePage = () => {
                                 <span className="material-icons align-middle">sports_esports</span> Amplia variedad de productos<br />
                                 <span className="material-icons align-middle">star</span> Calidad y confianza garantizadas
                             </div>
-                            <Link to="/productos" className="btn btn-primary btn-lg animate-button">Explora nuestros productos</Link>
+                            <Link to="/productos" className="btn btn-primary btn-lg animate-button">Explora nuestros productos</Link> {/* ✅ BOTÓN RESTAURADO */}
                         </div>
                         <div className="col-md-6 text-center d-none d-md-block">
                             <img
                                 src={process.env.PUBLIC_URL + "/img/banner2.png"}
                                 alt="Banner Gamer"
                                 className="img-fluid animate-img banner-img"
-                            />
+                            /> {/* ✅ IMAGEN RESTAURADA */}
                         </div>
                     </div>
                 </div>
+                 {/* ✅ FIN CONTENIDO RESTAURADO */}
             </section>
 
+<<<<<<< HEAD
             {/* Componente de Perfil de Usuario (sin cambios) */}
+=======
+>>>>>>> f32ff7671ad80942e17af5b9ca5720a0295fdd6e
             <UserProfile />
 
             <div className="banner-divider"></div>
