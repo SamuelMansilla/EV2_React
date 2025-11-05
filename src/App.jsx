@@ -1,9 +1,13 @@
+
 import React from 'react';
-// ✅ 1. Cambia la importación de 'BrowserRouter as Router' a solo 'BrowserRouter'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
-import Header from './components/Header';
-import Footer from './components/Footer';
+
+// Importa los Layouts
+import PublicLayout from './components/PublicLayout'; // Plantilla de la tienda (del Paso 3)
+import AdminLayout from './components/AdminLayout';   // Plantilla del admin (del Paso 2)
+
+// Importa todas las Páginas Públicas (ya existían)
 import HomePage from './pages/HomePage';
 import ProductosPage from './pages/ProductosPage';
 import CarritoPage from './pages/CarritoPage';
@@ -13,16 +17,23 @@ import ContactoPage from './pages/ContactoPage';
 import LoginPage from './pages/LoginPage';
 import DetalleProductoPage from './pages/DetalleProductoPage';
 import DetalleBlogPage from './pages/DetalleBlogPage';
+
+// Importa todas las Páginas de Admin (del Paso 1)
+import AdminHomePage from './pages/AdminHomePage';
+import AdminProductosPage from './pages/AdminProductosPage';
+import AdminUsuariosPage from './pages/AdminUsuariosPage'; 
+
+// Importa los CSS
 import './assets/css/styles.css';
+import './assets/css/admin.css'; // Importa el CSS de admin
 
 function App() {
   return (
     <CartProvider>
-      {/* ✅ 2. Usa BrowserRouter y añade la propiedad 'basename' */}
       <BrowserRouter basename={process.env.PUBLIC_URL}>
-        <Header />
-        <main>
-          <Routes>
+        <Routes>
+          {/* --- Rutas Públicas (usan PublicLayout) --- */}
+          <Route element={<PublicLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/productos" element={<ProductosPage />} />
             <Route path="/producto/:id" element={<DetalleProductoPage />} />
@@ -32,10 +43,18 @@ function App() {
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/carrito" element={<CarritoPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="*" element={<h1>404: Página no encontrada</h1>} />
-          </Routes>
-        </main>
-        <Footer />
+          </Route>
+
+          {/* --- Rutas de Admin (usan AdminLayout) --- */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminHomePage />} /> {/* Ruta principal /admin */}
+            <Route path="productos" element={<AdminProductosPage />} /> {/* Ruta /admin/productos */}
+            <Route path="usuarios" element={<AdminUsuariosPage />} /> {/* Ruta /admin/usuarios */}
+          </Route>
+          
+          {/* --- Ruta 404 (fuera de los layouts) --- */}
+          <Route path="*" element={<div className="container py-5 text-center"><h1>404: Página no encontrada</h1></div>} />
+        </Routes>
       </BrowserRouter>
     </CartProvider>
   );

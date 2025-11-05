@@ -15,14 +15,15 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
-    window.location.href = '/login';
+    // ✅ CORRECCIÓN: Usamos la versión de samuelmansilla para que funcione en GitHub Pages
+    window.location.href = process.env.PUBLIC_URL + '/login'; 
   };
 
   return (
     <header>
       <nav>
         <div className="logo">
-          {/* Aquí está la corrección: se usa la ruta como texto */}
+          {/* (Esto ya estaba correcto en framardones) */}
           <Link to="/"><img src={process.env.PUBLIC_URL +"/img/Logo_Level-U.webp"} alt="Logo Level-Up" /></Link>
         </div>
 
@@ -40,8 +41,17 @@ const Header = () => {
 
         <div className="icons" id="authArea">
           <Link to="/carrito"><span className="material-icons">shopping_cart</span></Link>
+          
           {user ? (
             <>
+              {/* ✅ AÑADIDO: Botón de Admin Condicional (de samuelmansilla) */}
+              {user.role === 'admin' && (
+                <Link to="/admin" className="admin-panel-link">
+                  <span className="material-icons">settings</span>
+                  Panel Admin
+                </Link>
+              )}
+
               <span style={{ color: '#39FF14', marginLeft: '10px' }}>¡Hola, {user.nombre}!</span>
               <button onClick={handleLogout} className="btn btn-sm btn-danger" style={{ marginLeft: '10px' }}>Salir</button>
             </>

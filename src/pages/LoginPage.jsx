@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Importamos axios
 import { regionesYcomunas } from '../data/regiones';
 import '../assets/css/login.css';
 
@@ -7,33 +8,33 @@ const LoginPage = () => {
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
 
-    // ✅ 1. AÑADIMOS 'referralCode' DE VUELTA AL ESTADO INICIAL
+    // El estado del formulario sigue igual
     const [formData, setFormData] = useState({
         run: '', nombre: '', apellidos: '', email: '',
-        password: '', fechaNac: '', role: 'cliente', region: '', comuna: '', // Role 'cliente' por defecto
-        referralCode: '' 
+        password: '', fechaNac: '', role: 'cliente', region: '', comuna: '',
+        referralCode: ''
     });
     const [errors, setErrors] = useState({});
     const [comunas, setComunas] = useState([]);
 
+    // Este hook useEffect para las comunas sigue igual
     useEffect(() => {
         if (formData.region && regionesYcomunas && regionesYcomunas[formData.region]) {
             setComunas(regionesYcomunas[formData.region]);
         } else {
             setComunas([]);
         }
-        // Reiniciar comuna al cambiar de región (importante para evitar errores)
         if (formData.comuna && !comunas.includes(formData.comuna)) {
              setFormData(prev => ({ ...prev, comuna: '' }));
         }
-       
-    }, [formData.region, comunas]);
+    }, [formData.region, comunas]); // Se corrige la dependencia 'comunas'
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         setFormData(prevData => ({ ...prevData, [id]: value }));
     };
 
+    // La función de validación sigue igual
     const validate = () => {
         const newErrors = {};
         const nameRegex = /^[a-zA-Z\s]+$/;
@@ -56,63 +57,98 @@ const LoginPage = () => {
         if (!formData.role) newErrors.role = "Debes seleccionar un rol.";
         if (!formData.region) newErrors.region = "Debes seleccionar una región.";
         if (!formData.comuna) newErrors.comuna = "Debes seleccionar una comuna.";
+        
+        // La fecha de nacimiento es importante para el backend (LocalDate)
+        if (!formData.fechaNac) newErrors.fechaNac = "La fecha de nacimiento es obligatoria.";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    // ✅ 2. FUNCIÓN DE REGISTRO ACTUALIZADA CON LÓGICA DE REFERIDOS Y GAMIFICACIÓN
-    const handleRegister = (e) => {
+    // --- handleRegister MODIFICADO ---
+    const handleRegister = async (e) => {
         e.preventDefault();
         if (validate()) {
-            // Lógica de referido (simulada)
-            if (formData.referralCode) {
-                const referredByUser = JSON.parse(localStorage.getItem("user")); // Asume que el código es del último usuario
-                if (referredByUser && referredByUser.myReferralCode === formData.referralCode) {
-                    alert(`¡Gracias por usar el código de ${referredByUser.nombre}!`);
-                    // (En una app real, aquí actualizarías los puntos de 'referredByUser' en la base de datos)
-                    console.log(`${referredByUser.nombre} ha ganado puntos por referirte.`);
+            try {
+                // 1. Llamamos a la API de registro de Spring Boot
+                // Nota: referralCode se envía en el objeto formData
+                const response = await axios.post('http://localhost:8080/api/auth/register', formData);
+
+                // 2. Si el registro es exitoso (código 201)
+                const newUser = response.data;
+                alert(`¡Usuario ${newUser.nombre} registrado con éxito! Tu código de referido es: ${newUser.myReferralCode}`);
+                setIsLogin(true); // Muestra el formulario de login
+                setFormData({ // Resetea el formulario
+                    run: '', nombre: '', apellidos: '', email: '',
+                    password: '', fechaNac: '', role: 'cliente', region: '', comuna: '',
+                    referralCode: '' 
+                });
+                setErrors({});
+
+            } catch (error) {
+                // 3. Manejamos errores de la API
+                console.error("Error en el registro:", error);
+                if (error.response) {
+                    if (error.response.status === 409) { // 409 Conflict (Email existe)
+                        setErrors(prev => ({ ...prev, email: "El correo electrónico ya está registrado." }));
+                    } else if (error.response.status === 400) { // 400 Bad Request
+                        alert("Error: Faltan datos o son incorrectos. " + (error.response.data.mensaje || ""));
+                    } else {
+                        alert("Error inesperado en el servidor al registrar.");
+                    }
                 } else {
-                    console.log("Código de referido no válido o no encontrado.");
+                    alert("No se pudo conectar con el servidor de registro.");
                 }
             }
-
-            // Genera un código de referido único para el nuevo usuario
-            const myNewReferralCode = formData.nombre.slice(0, 4).toUpperCase() + Date.now().toString().slice(-4);
-
-            // Crea el nuevo objeto de usuario con los datos de gamificación
-            const newUser = {
-                ...formData,
-                points: 50, // Puntos iniciales por registrarse
-                level: 1,
-                myReferralCode: myNewReferralCode
-            };
-
-            localStorage.setItem("user", JSON.stringify(newUser));
-            alert(`Usuario registrado con éxito. Tu código de referido es: ${myNewReferralCode}`);
-            setIsLogin(true); // Cambia al formulario de login
         }
     };
 
-    const handleLogin = (e) => {
+    // --- handleLogin MODIFICADO ---
+    const handleLogin = async (e) => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
-        const user = JSON.parse(localStorage.getItem("user"));
 
-        if (user && user.email === email && user.password === password) {
-            alert(`Bienvenido ${user.nombre}`);
+        if (!email || !password) {
+            alert("Email y contraseña son requeridos.");
+            return;
+        }
+
+        try {
+            // 1. Llamamos a la API de login de Spring Boot
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
+                email: email,
+                password: password
+            });
+
+            // 2. Si el login es exitoso (código 200)
+            const user = response.data; // El usuario viene del backend (ya sin contraseña)
+            
+            // 3. Guardamos el usuario devuelto por la API en localStorage
+            localStorage.setItem("user", JSON.stringify(user));
+            
+            alert(`¡Bienvenido de nuevo, ${user.nombre}!`);
+
+            // 4. Redirigimos según el rol
             if (user.role === 'admin') {
-                navigate("/admin"); 
+                navigate("/admin"); // Asumiendo que tienes una ruta /admin
             } else {
-                navigate("/");
+                navigate("/"); // A la página de inicio
             }
-            window.location.reload();
-        } else {
-            alert("Correo o contraseña incorrectos.");
+            window.location.reload(); // Recarga la página para actualizar el Header
+
+        } catch (error) {
+            // 5. Manejamos errores de login
+            console.error("Error en el login:", error);
+            if (error.response && (error.response.status === 401 || error.response.status === 404)) {
+                alert("Correo o contraseña incorrectos.");
+            } else {
+                alert("No se pudo conectar con el servidor de login.");
+            }
         }
     };
 
+    // --- RENDERIZADO (sin cambios) ---
     return (
         <div className="auth-container">
             {isLogin ? (
@@ -150,8 +186,8 @@ const LoginPage = () => {
                         {errors.password && <span className="error">{errors.password}</span>}
 
                         <input type="date" id="fechaNac" value={formData.fechaNac} onChange={handleInputChange} />
+                        {errors.fechaNac && <span className="error">{errors.fechaNac}</span>}
                         
-                        {/* ✅ 3. INPUT PARA EL CÓDIGO DE REFERIDO AÑADIDO DE VUELTA */}
                         <input 
                             type="text" 
                             id="referralCode" 

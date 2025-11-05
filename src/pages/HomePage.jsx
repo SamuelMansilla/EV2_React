@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react'; // Agrega useContext
 import { Link } from 'react-router-dom';
-import { productos } from '../data/productos';
+import axios from 'axios'; // Agrega axios
 import CategoryFilter from '../components/CategoryFilter';
-import UserProfile from '../components/UserProfile'; // ✅ 1. IMPORTA EL COMPONENTE DE PERFIL
+import UserProfile from '../components/UserProfile';
+import { CartContext } from '../context/CartContext'; // Importa CartContext si decides añadir "Agregar al Carrito" aquí
 
 // Importa los CSS necesarios
 import '../assets/css/banner.css';
 import '../assets/css/productos.css';
+
+// Ya no importamos los productos locales
+// import { productos } from '../data/productos';
 
 // Función para renderizar estrellas
 const renderStars = (rating) => {
@@ -15,7 +19,7 @@ const renderStars = (rating) => {
     return '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
 };
 
-// Función para normalizar texto
+// Función para normalizar texto (sin cambios)
 const normalizeText = (text) => {
     if (!text) return '';
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
@@ -25,10 +29,36 @@ const HomePage = () => {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [priceFilter, setPriceFilter] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredProducts, setFilteredProducts] = useState(productos);
+    
+    // --- ESTADOS PARA DATOS DE LA API ---
+    const [allProducts, setAllProducts] = useState([]); // Guarda la lista original de la API
+    const [filteredProducts, setFilteredProducts] = useState([]); // Guarda los productos filtrados
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    // --- HOOK PARA CARGAR PRODUCTOS DESDE LA API ---
     useEffect(() => {
-        let tempProducts = [...productos];
+        const fetchAllProductos = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get('http://localhost:8080/api/productos');
+                setAllProducts(response.data); // Guarda la lista completa
+                setFilteredProducts(response.data); // Inicialmente muestra todos
+                setError(null);
+            } catch (err) {
+                console.error("Error al cargar productos en Home:", err);
+                setError("Error al cargar productos.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAllProductos();
+    }, []); // Se ejecuta solo una vez al cargar la página
+
+    // --- HOOK PARA FILTRAR PRODUCTOS (AHORA USA EL ESTADO 'allProducts') ---
+    useEffect(() => {
+        let tempProducts = [...allProducts]; // Empieza con la lista completa de la API
+
         if (searchTerm) {
              tempProducts = tempProducts.filter(product =>
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -48,14 +78,15 @@ const HomePage = () => {
                 return product.price >= min;
             });
         }
-        setFilteredProducts(tempProducts);
-    }, [selectedCategory, priceFilter, searchTerm]);
+        setFilteredProducts(tempProducts); // Actualiza la lista filtrada
+
+    }, [selectedCategory, priceFilter, searchTerm, allProducts]); // Depende de allProducts ahora
 
     return (
         <div>
-            {/* --- Sección del Banner --- */}
+            {/* --- Sección del Banner (sin cambios) --- */}
             <section className="banner py-5 bg-dark text-light">
-                 {/* ... (contenido del banner sin cambios) ... */}
+                 {/* ... (contenido del banner) ... */}
                  <div className="container">
                     <div className="row align-items-center">
                         <div className="col-md-6">
@@ -80,7 +111,7 @@ const HomePage = () => {
                 </div>
             </section>
 
-            {/* ✅ 2. AÑADE EL COMPONENTE DE PERFIL DE USUARIO AQUÍ */}
+            {/* Componente de Perfil de Usuario (sin cambios) */}
             <UserProfile />
 
             <div className="banner-divider"></div>
@@ -92,9 +123,9 @@ const HomePage = () => {
 
             {/* --- Sección de Productos --- */}
             <section className="products container">
-                 {/* ... (contenido de productos sin cambios) ... */}
                  <h2 className="section-title">Nuestros Productos</h2>
                 <div className="filters mb-4 d-flex gap-2">
+                    {/* ... (filtros sin cambios) ... */}
                     <input
                         type="text"
                         className="filter-input flex-grow-1"
@@ -114,29 +145,37 @@ const HomePage = () => {
                       <option value="500000-">$500.000 o más</option>
                     </select>
                 </div>
-                <div className="grid-productos">
-                    {filteredProducts.length > 0 ? (
-                        filteredProducts.map(product => (
-                            <div className="card" key={product.code}>
-                                <img src={product.image} alt={product.name} />
-                                <div className="card-body">
-                                    <h6>{product.name}</h6>
-                                    <div className="rating mb-2">
-                                        <span className="stars">{renderStars(product.rating)}</span>
-                                        <span className="reviews">({product.reviews} reseñas)</span>
+                
+                {/* --- RENDERIZADO DE PRODUCTOS ACTUALIZADO --- */}
+                {loading && <p className="text-center w-100">Cargando productos...</p>}
+                {error && <p className="text-center w-100" style={{color: 'red'}}>{error}</p>}
+                
+                {!loading && !error && (
+                    <div className="grid-productos">
+                        {filteredProducts.length > 0 ? (
+                            filteredProducts.map(product => (
+                                <div className="card" key={product.code}>
+                                    {/* ¡LA CORRECCIÓN DE LA IMAGEN ESTÁ AQUÍ! */}
+                                    <img src={process.env.PUBLIC_URL + product.image} alt={product.name} />
+                                    <div className="card-body">
+                                        <h6>{product.name}</h6>
+                                        <div className="rating mb-2">
+                                            <span className="stars">{renderStars(product.rating)}</span>
+                                            <span className="reviews">({product.reviews} reseñas)</span>
+                                        </div>
+                                        <p className="descripcion">{product.description.substring(0, 80)}...</p>
                                     </div>
-                                    <p className="descripcion">{product.description.substring(0, 80)}...</p>
+                                    <div className="precio">${product.price.toLocaleString('es-CL')}</div>
+                                    <Link to={`/producto/${product.code}`} className="btn btn-outline-light">
+                                        Ver detalle
+                                    </Link>
                                 </div>
-                                <div className="precio">${product.price.toLocaleString('es-CL')}</div>
-                                <Link to={`/producto/${product.code}`} className="btn btn-outline-light">
-                                    Ver detalle
-                                </Link>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-center w-100">No se encontraron productos con esos filtros.</p>
-                    )}
-                </div>
+                            ))
+                        ) : (
+                            <p className="text-center w-100">No se encontraron productos con esos filtros.</p>
+                        )}
+                    </div>
+                )}
             </section>
         </div>
     );
